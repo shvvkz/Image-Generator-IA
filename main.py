@@ -25,28 +25,31 @@ def init_session():
     )
     return client_novita, client_nebius
 
+def prompt_user():
+    """
+    Prompt the user to enter a prompt for generating an image.
+    
+    Returns:
+        str: The user-entered prompt.
+    """
+    while True:
+        user_input = input("Please enter a prompt to generate an image:\n> ")
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        print("Error: The prompt must be a string. Please try again.")
+
 def validate_json_structure(json_data):
     """
     Validate if the given JSON follows the expected structure.
     
-    Args:
-        json_data (dict): The JSON object to validate.
-    
     Returns:
         bool: True if valid, False otherwise.
     """
-    if not isinstance(json_data, dict):
-        return False
-    if "enhanced_prompts" not in json_data or not isinstance(json_data["enhanced_prompts"], list):
-        return False
-    return all(isinstance(prompt, str) for prompt in json_data["enhanced_prompts"])
+    return isinstance(json_data, dict) and "enhanced_prompts" in json_data and isinstance(json_data["enhanced_prompts"], list)
 
 def extract_json(text):
     """
     Extracts a JSON object from the text using regex.
-    
-    Args:
-        text (str): The text to extract JSON from.
     
     Returns:
         dict or None: Extracted JSON object or None if extraction fails.
@@ -62,9 +65,6 @@ def extract_json(text):
 def clean_answer(answer):
     """
     Clean the answer and ensure it is a valid JSON object.
-    
-    Args:
-        answer (str): The answer to be cleaned.
     
     Returns:
         dict: The cleaned answer as a JSON object.
@@ -83,14 +83,10 @@ def ask_until_valid_json(client, messages):
     """
     Continually asks the AI for a JSON response until a valid one is received.
     
-    Args:
-        client (InferenceClient): The AI client to use.
-        messages (list): The conversation history including the system and user messages.
-    
     Returns:
         dict: The valid JSON response.
     """
-    for attempt in range(3):  # Maximum 3 tentatives
+    for attempt in range(3):
         completion = client.chat.completions.create(
             model="deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
             messages=messages,
@@ -109,17 +105,13 @@ def ask_until_valid_json(client, messages):
     print("L'IA a échoué après 3 tentatives.")
     exit(1)
 
-def enhance_user_prompt(client):
+def enhance_user_prompt(client, user_prompt):
     """
     Enhance the user prompt by generating five different variations.
-    
-    Args:
-        client (InferenceClient): The AI client to use.
     
     Returns:
         dict: The enhanced prompts as a JSON object.
     """
-    user_prompt = input("Please enter a prompt to generate an image:\n> ")
     messages = [
         {
             "role": "system",
@@ -139,7 +131,7 @@ def enhance_user_prompt(client):
     
     return ask_until_valid_json(client, messages)
 
-def generate_image(client, prompt, image_name):
+def generate_image(client, prompt, image_name, directory_path):
     """
     Generate an image based on the provided prompt and save it to a file.
     
@@ -147,12 +139,22 @@ def generate_image(client, prompt, image_name):
         client (InferenceClient): The AI client to use for image generation.
         prompt (str): The prompt to use for generating the image.
         image_name (str): The name of the file to save the generated image.
+        directory_path (str): The full path to the directory where the image should be saved.
     """
+    print(f"[GENERATING IMAGE] Prompt: {prompt}")
     image = client.text_to_image(
         prompt,
         model="black-forest-labs/FLUX.1-dev",
     )
-    image.save(image_name+".png")
+    
+    os.makedirs(directory_path, exist_ok=True)
+    image_path = os.path.join(directory_path, image_name + ".png")
+    
+    try:
+        image.save(image_path)
+        print(f"[IMAGE SAVED] {image_path}")
+    except Exception as e:
+        print(f"Erreur lors de l'enregistrement de l'image: {e}")
 
 def main():
     """
@@ -162,13 +164,17 @@ def main():
     """
     client_novita, client_nebius = init_session()
     print("[SESSION INITIALIZED]")
-    print("[ASKING FOR PROMPT]")
-    enhanced_prompt_json = enhance_user_prompt(client_novita)
+    
+    user_prompt = prompt_user()
+    enhanced_prompt_json = enhance_user_prompt(client_novita, user_prompt)
     print("[PROMPT ENHANCED]")
 
+    directory_name = re.sub(r'\s+', '_', user_prompt.strip().lower())
+    directory_path = os.path.join("image_generated", directory_name)
+    
     for i, prompt in enumerate(enhanced_prompt_json['enhanced_prompts']):
         print(f"[GENERATING IMAGE {i+1}/{len(enhanced_prompt_json['enhanced_prompts'])}]")
-        generate_image(client_nebius, prompt, f"output_{i}")
-    
+        generate_image(client_nebius, prompt, f"output_{i}", directory_path)
+
 if __name__ == "__main__":
     main()
