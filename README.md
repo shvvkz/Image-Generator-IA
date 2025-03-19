@@ -154,7 +154,7 @@ pip install -r requirements.txt
 ```
 
 ### 4.3 Erreur JSON:
-Si l'IA ne renvoie pas un JSON valide, le programme affichera une erreur. Dans ce cas, vérifiez que votre connexion Internet est stable et que l'API Novita fonctionne correctement.
+Si l'IA ne renvoie pas un JSON valide, le programme réessayera 3 fois mais si l'erreur subsiste veillez relancer le programme.
 
 ## 5. Améliorations possibles:
 
@@ -163,3 +163,27 @@ Voici quelques pistes d'amélioration pour le projet :
 - Permettre à l'utilisateur de choisir parmi plusieurs modèles d'IA pour la génération.
 - Sauvegarder un historique des prompts et images générées.
 - Ajouter des filtres artistiques aux images générées.
+
+## 6. Exemples:
+
+Prompt original: **A cute black cat in the night with blue neon eyes**
+
+#### 6.1 A cute black cat with soft fur and expressive blue neon eyes, sitting in a quiet urban alley under the glow of street lamps, with a mysterious and curious gaze
+
+![Exemple d'image générée](image_generated/example/example_0.png)
+
+#### 6.2 A sleek black cat with glowing blue eyes, walking through a moonlit forest, its fur catching the light as it moves gracefully.
+
+![Exemple d'image générée](image_generated/example/example_1.png)
+
+#### 6.3 In the dead of night, a black cat with striking blue neon eyes investigates an intriguing object on a dark street, its surroundings illuminated by distant city lights.
+
+![Exemple d'image générée](image_generated/example/example_2.png)
+
+#### 6.4 A black cat with enchanting blue neon eyes perches on a windowsill, its gaze fixed on the moonlit cityscape below, exuding a sense of calm and watchfulness.
+
+![Exemple d'image générée](image_generated/example/example_3.png)
+
+#### 6.5 A black cat with glowing blue eyes plays with a ball of yarn in a dimly lit room, its soft fur illuminated by a single lamp, creating a warm and cozy atmosphere.
+
+![Exemple d'image générée](image_generated/example/example_4.png)
