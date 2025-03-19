@@ -1,0 +1,3 @@
+huggingface-hub
+dotenv
+pillow
