@@ -3,3 +3,4 @@
 output_*
 /__pycache__/
 *.pyc
+database.json
