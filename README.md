@@ -104,7 +104,7 @@ Cette commande lancera automatiquement l'application web dans votre navigateur p
 http://localhost:8501
 ```
 
-Une fois l'application ouverte, vous verrez une interface simple où vous pouvez choisir un model de LLM (vous pouvez laisser le champs inchangé) et saisir un prompt dans un champ de texte.
+Une fois l'application ouverte, vous verrez une interface simple où vous pouvez choisir un modèle de LLM (vous pouvez laisser le champs inchangé) et saisir un prompt dans un champ de texte.
 
 Par exemple :
 ```
