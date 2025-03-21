@@ -4,7 +4,7 @@ par Viggo Casciano
 # Le sujet
 Voici le sujet:
 - Créer un code python qui prend en entrée un prompt d'un **utilisateur**.
-- Ce prompt doit être _renforcé_ par le LLM Deepseek.
+- Ce prompt doit être _renforcé_ par un LLM au choix mis à disposition par Novita.
 - Ensuite le prompt renforcé doit être envoyer à une IA générative d'image appelé Black Forest pour générer une image.
 
 ## 1. Mise en place du projet:
@@ -86,85 +86,83 @@ Celui ci va nous installer 3 packages:
 - huggingface-hub: package qui va nous rendre les intéractions avec les API des IA plus simple
 - dotenv: package qui va nous permettre de gérer nous variables d'environnements
 - pillow: package qui va nous permettre d'écrire une image à partir d'une BitMap
+- streamlit: package qui nous permettre de créer une application web interactive pour visualiser des données
 
-## 2. Génération du prompt intermédiaire:
+## 2. Utilisation de l'outil:
 
 Une fois que vous avez configuré votre environnement et installé les dépendances, vous pouvez exécuter le script pour générer un prompt amélioré grâce à l'IA.
 
-### 2.1 Exécution du script:
-Pour exécuter le script, utilisez la commande suivante :
+Pour exécuter l'application, utilisez la commande suivante dans un terminal à la racine du projet :
+
 ```sh
-python main.py
+streamlit run app.py
 ```
 
-Lorsque vous exécutez le script, celui-ci vous demandera d'entrer un prompt. Ce prompt sera amélioré par l'IA Novita pour le rendre plus descriptif et adapté à la génération d'images.
+Cette commande lancera automatiquement l'application web dans votre navigateur par défaut, à l'adresse suivante :
 
-Exemple :
 ```
-Please enter a prompt to generate an image:
-> Un chat assis sous un arbre
+http://localhost:8501
 ```
 
-L'IA Novita va alors améliorer ce prompt pour le rendre plus riche en détails. Par exemple :
+Une fois l'application ouverte, vous verrez une interface simple où vous pouvez choisir un model de LLM (vous pouvez laisser le champs inchangé) et saisir un prompt dans un champ de texte.
+
+Par exemple :
 ```
-{"enhanced_prompts": [
+Un chat assis sous un arbre
+```
+
+Cliquez ensuite sur le bouton **"✨ Générer les images"**.
+
+L'application va alors :
+1. Envoyer ce prompt à l'IA **Novita** pour le transformer en 5 prompts plus riches et descriptifs.
+2. Afficher les prompts améliorés sous forme de JSON.
+3. Utiliser **Nebius** pour générer une image à partir de chacun de ces 5 prompts.
+4. Afficher toutes les images directement dans l'interface web.
+
+Exemple de résultat JSON :
+```json
+{
+  "enhanced_prompts": [
     "Un chat majestueux avec un pelage doré est assis sous un vieux chêne, baigné par la lumière dorée du coucher de soleil.",
     "Un chat noir aux yeux émeraude se repose paisiblement sous un arbre en fleurs, alors que des pétales roses tombent doucement autour de lui.",
     "Un chat roux joueur bondit entre les racines noueuses d'un arbre gigantesque dans une forêt mystérieuse, illuminée par une lueur féerique.",
     "Un petit chat tigré s'assoit sous un pommier, contemplant les pommes rouges qui pendent au-dessus de lui, tandis qu'une brise légère fait danser les feuilles.",
-    "Un chat siamois au regard perçant est blotti sous un cerisier en fleurs, dans un jardin japonais paisible avec une rivière sinueuse." 
-]}
+    "Un chat siamois au regard perçant est blotti sous un cerisier en fleurs, dans un jardin japonais paisible avec une rivière sinueuse."
+  ]
+}
 ```
 
-## 3. Génération d'images:
+Chaque image générée sera affichée dans une grille juste en dessous. Les fichiers seront aussi sauvegardés localement dans un dossier `image_generated/nom_du_prompt/` pour un accès ultérieur.
 
-Une fois le prompt amélioré, l'IA Nebius utilisera chacun des cinq prompts enrichis pour générer une image.
 
-### 3.1 Processus de génération d'image:
-Le programme enverra chaque prompt amélioré à l'IA Nebius pour créer une image. Chaque image sera ensuite enregistrée dans le dossier où se trouve le script sous la forme `output_X.png`.
 
-Exemple de sortie :
-```
-[GENERATING IMAGE 1/5]
-[GENERATING IMAGE 2/5]
-[GENERATING IMAGE 3/5]
-[GENERATING IMAGE 4/5]
-[GENERATING IMAGE 5/5]
-```
-Les fichiers images seront alors disponibles sous les noms `output_0.png`, `output_1.png`, etc.
-
-### 3.2 Accéder aux images générées:
-Après l'exécution du script, vous pourrez voir les images générées dans le dossier du projet. Vous pouvez les ouvrir avec n'importe quel visualiseur d'images pour voir le résultat.
-
-## 4. Problèmes et solutions:
+## 3. Problèmes et solutions:
 
 Si vous rencontrez des erreurs lors de l'exécution du script, voici quelques solutions possibles :
 
-### 4.1 Clés d'API non reconnues:
+### 3.1 Clés d'API non reconnues:
 Si vous voyez un message d'erreur indiquant que les clés d'API sont invalides ou absentes, assurez-vous que votre fichier `.env` est bien configuré et contient les clés correctes.
 ```sh
 NOVITA_API_KEY=sk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NEBIUS_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-### 4.2 Problèmes avec l'installation des dépendances:
+### 3.2 Problèmes avec l'installation des dépendances:
 Si une erreur indique qu'un module est manquant, vérifiez que toutes les dépendances sont bien installées avec :
 ```sh
 pip install -r requirements.txt
 ```
 
-### 4.3 Erreur JSON:
+### 3.3 Erreur JSON:
 Si l'IA ne renvoie pas un JSON valide, le programme réessayera 3 fois mais si l'erreur subsiste veillez relancer le programme.
 
-## 5. Améliorations possibles:
+## 4. Améliorations possibles:
 
 Voici quelques pistes d'amélioration pour le projet :
-- Ajouter une interface graphique pour faciliter l'utilisation.
-- Permettre à l'utilisateur de choisir parmi plusieurs modèles d'IA pour la génération.
 - Sauvegarder un historique des prompts et images générées.
 - Ajouter des filtres artistiques aux images générées.
 
-## 6. Exemples:
+## 5. Exemples:
 
 Prompt original: **A cute black cat in the night with blue neon eyes**
 
