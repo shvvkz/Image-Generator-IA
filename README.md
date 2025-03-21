@@ -4,7 +4,7 @@ par Viggo Casciano
 # Le sujet
 Voici le sujet:
 - Créer un code python qui prend en entrée un prompt d'un **utilisateur**.
-- Ce prompt doit être _renforcé_ par le LLM Deepseek.
+- Ce prompt doit être _renforcé_ par un LLM au choix mis à disposition par Novita.
 - Ensuite le prompt renforcé doit être envoyer à une IA générative d'image appelé Black Forest pour générer une image.
 
 ## 1. Mise en place du projet:
@@ -88,7 +88,7 @@ Celui ci va nous installer 3 packages:
 - pillow: package qui va nous permettre d'écrire une image à partir d'une BitMap
 - streamlit: package qui nous permettre de créer une application web interactive pour visualiser des données
 
-## 2. Génération du prompt intermédiaire:
+## 2. Utilisation de l'outil:
 
 Une fois que vous avez configuré votre environnement et installé les dépendances, vous pouvez exécuter le script pour générer un prompt amélioré grâce à l'IA.
 
@@ -104,7 +104,7 @@ Cette commande lancera automatiquement l'application web dans votre navigateur p
 http://localhost:8501
 ```
 
-Une fois l'application ouverte, vous verrez une interface simple où vous pouvez saisir un prompt dans un champ de texte.
+Une fois l'application ouverte, vous verrez une interface simple où vous pouvez choisir un model de LLM (vous pouvez laisser le champs inchangé) et saisir un prompt dans un champ de texte.
 
 Par exemple :
 ```
@@ -159,7 +159,6 @@ Si l'IA ne renvoie pas un JSON valide, le programme réessayera 3 fois mais si l
 ## 4. Améliorations possibles:
 
 Voici quelques pistes d'amélioration pour le projet :
-- Permettre à l'utilisateur de choisir parmi plusieurs modèles d'IA pour la génération.
 - Sauvegarder un historique des prompts et images générées.
 - Ajouter des filtres artistiques aux images générées.
 

@@ -1,18 +1,19 @@
 import time
 from core.utils import extract_json, validate_json_structure
 
-def ask_until_valid_json(client, messages):
+def ask_until_valid_json(client, messages, model):
     """
     Continually asks the AI for a JSON response until a valid one is received.
     Args:
         client (InferenceClient): The InferenceClient object.
         messages (list): A list of messages to send to the AI.
+        model (str): The model to use for generating the response
     Returns:
         dict: The valid JSON response.
     """
     for attempt in range(3):
         completion = client.chat.completions.create(
-            model="deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            model=model,
             messages=messages,
             max_tokens=1000,
         )
@@ -27,12 +28,13 @@ def ask_until_valid_json(client, messages):
 
     raise ValueError("L'IA a échoué après 3 tentatives.")
 
-def enhance_user_prompt(client, user_prompt):
+def enhance_user_prompt(client, user_prompt, model):
     """
     Enhance the user prompt by generating five different variations.
     Args:
         client (InferenceClient): The InferenceClient object.
         user_prompt (str): The user prompt to enhance.
+        model (str): The model to use for enhancing the prompt.
     Returns:
         dict: The enhanced prompts as a JSON object.
     """
@@ -53,4 +55,4 @@ def enhance_user_prompt(client, user_prompt):
         }
     ]
     
-    return ask_until_valid_json(client, messages)
+    return ask_until_valid_json(client, messages, model)
