@@ -5,6 +5,7 @@ from datetime import datetime
 from core.session import init_session
 from core.enhancer import enhance_user_prompt
 from core.models import LLM_MODELS
+from core.styles import STYLE_MAP
 from generator.image import generate_image
 from database.json_db import add_entry, generate_uid, get_all_entries
 
@@ -38,6 +39,10 @@ def main():
         st.session_state.client_novita, st.session_state.client_nebius = init_session()
 
     model_choice = model_selector()
+    style_fr = st.selectbox("🎨 Style artistique", list(STYLE_MAP.keys()))
+    style_en = STYLE_MAP[style_fr]
+    num_images = st.slider("🖼️ Nombre d’images à générer", min_value=1, max_value=5, value=5)
+
     prompt = prompt_input_section()
 
     if prompt:
@@ -56,12 +61,12 @@ def main():
 
         enhance_box = st.empty()
         save_box = st.empty()
-        image_boxes = [st.empty() for _ in range(5)]
+        image_boxes = [st.empty() for _ in range(num_images)]
 
         with st.spinner("Amélioration du prompt..."):
             try:
                 enhanced_json = enhance_user_prompt(
-                    st.session_state.client_novita, prompt, model_choice
+                    st.session_state.client_novita, prompt, model_choice, num_images, style_en
                 )
             except Exception as e:
                 st.error(f"Erreur lors de l'amélioration du prompt : {e}")
